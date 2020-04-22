@@ -5,17 +5,61 @@
 	<parent>
 		<groupId>info.unterrainer.commons</groupId>
 		<artifactId>parent-pom</artifactId>
-		<version>0.0.13</version>
+		<version>0.0.14</version>
 	</parent>
+
+	<properties>
+		<mainclass>info.unterrainer.commons.jreutils.JreUtils</mainclass>
+	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jre-utils</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<name>JreUtils</name>
 	<packaging>jar</packaging>
 
 	<dependencies>
-		
+		<dependency>
+			<groupId>info.unterrainer.commons</groupId>
+			<artifactId>cli-utils</artifactId>
+			<version>0.2.4</version>
+		</dependency>
 	</dependencies>
 
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>info.unterrainer.commons.jreutils.JreUtils</mainClass>
+								</transformer>
+							</transformers>
+							<filters>
+								<filter>
+									<artifact>*:*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.DSA</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+									</excludes>
+								</filter>
+							</filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+	</build>
 </project>
