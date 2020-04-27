@@ -39,8 +39,8 @@ public class Resources {
 	 * @return the contents of the file as a String
 	 * @throws IOException if there is a problem opening or reading the file given
 	 */
-	public static String readResource(final String path) throws IOException {
-		InputStream inputStream = Resources.class.getResourceAsStream(path);
+	public static String readResource(final Class<?> classLoaderSource, final String path) throws IOException {
+		InputStream inputStream = classLoaderSource.getResourceAsStream(path);
 		StringBuilder textBuilder = new StringBuilder();
 		try (Reader reader = new BufferedReader(
 				new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -61,8 +61,8 @@ public class Resources {
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */
-	public static List<Path> walk() throws IOException {
-		return walk(e -> true);
+	public static List<Path> walk(final Class<?> classLoaderSource) throws IOException {
+		return walk(classLoaderSource, e -> true);
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class Resources {
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */
-	public static List<Path> walk(final String path) throws IOException {
-		return walk(path, e -> true);
+	public static List<Path> walk(final Class<?> classLoaderSource, final String path) throws IOException {
+		return walk(classLoaderSource, path, e -> true);
 	}
 
 	/**
@@ -97,8 +97,9 @@ public class Resources {
 	 * @throws IOException if something went wrong opening a directory
 	 */
 	@SafeVarargs
-	public static List<Path> walk(final Predicate<Path>... fileNameFilters) throws IOException {
-		return walk(null, fileNameFilters);
+	public static List<Path> walk(final Class<?> classLoaderSource, final Predicate<Path>... fileNameFilters)
+			throws IOException {
+		return walk(classLoaderSource, null, fileNameFilters);
 	}
 
 	/**
@@ -119,8 +120,8 @@ public class Resources {
 	 * @throws IOException if something went wrong opening a directory
 	 */
 	@SafeVarargs
-	public static List<Path> walk(final String relativePath, final Predicate<Path>... fileNameFilters)
-			throws IOException {
+	public static List<Path> walk(final Class<?> classLoaderSource, final String relativePath,
+			final Predicate<Path>... fileNameFilters) throws IOException {
 		Stream<Path> stream = null;
 		List<Predicate<Path>> allPredicates = Arrays.asList(fileNameFilters);
 		String path = relativePath;
@@ -128,9 +129,9 @@ public class Resources {
 			path = "/";
 
 		try {
-			URI uri = Resources.class.getResource(path).toURI();
+			URI uri = classLoaderSource.getResource(path).toURI();
 			if ("jar".equals(uri.getScheme()))
-				return walkJar(allPredicates);
+				return walkJar(classLoaderSource, allPredicates);
 			else {
 				Path basePath = Paths.get(uri);
 				stream = Files.walk(basePath);
@@ -149,9 +150,9 @@ public class Resources {
 		return null;
 	}
 
-	private static List<Path> walkJar(final List<Predicate<Path>> allPredicates)
+	private static List<Path> walkJar(final Class<?> classLoaderSource, final List<Predicate<Path>> allPredicates)
 			throws URISyntaxException, IOException, FileNotFoundException {
-		File jarFile = new File(Resources.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+		File jarFile = new File(classLoaderSource.getProtectionDomain().getCodeSource().getLocation().toURI());
 		try (ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
 			List<Path> results = new ArrayList<>();
 			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {

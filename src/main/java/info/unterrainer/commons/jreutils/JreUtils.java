@@ -31,8 +31,8 @@ public class JreUtils {
 		if (cli.isArgSet("endswith")) {
 			String ew = cli.getArgValue("endswith");
 			log.info("adding endswith [{}]", ew);
-			r = Resources.walk(path, p -> p.toString().endsWith(ew));
+			r = Resources.walk(JreUtils.class, path, p -> p.toString().endsWith(ew));
 		} else
-			r = Resources.walk(path);
+			r = Resources.walk(JreUtils.class, path);
 	}
 }
