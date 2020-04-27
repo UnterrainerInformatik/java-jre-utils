@@ -25,7 +25,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @UtilityClass
 public class Resources {
 
@@ -132,9 +134,11 @@ public class Resources {
 			else {
 				Path basePath = Paths.get(uri);
 				stream = Files.walk(basePath);
-				return stream.filter(allPredicates.stream().reduce(x -> true, Predicate::and))
-						.map(p -> basePath.relativize(p)).filter(name -> !name.toString().isEmpty())
-						.collect(Collectors.toList());
+				List<Path> list = stream.collect(Collectors.toList());
+				List<Path> results = new ArrayList<>();
+				for (Path p : list)
+					filterFor(allPredicates, results, basePath.relativize(p));
+				return results;
 			}
 		} catch (URISyntaxException e) {
 			// NOOP (never happens)
@@ -149,20 +153,25 @@ public class Resources {
 			throws URISyntaxException, IOException, FileNotFoundException {
 		File jarFile = new File(Resources.class.getProtectionDomain().getCodeSource().getLocation().toURI());
 		try (ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
-			List<Path> result = new ArrayList<>();
+			List<Path> results = new ArrayList<>();
 			for (ZipEntry entry = zip.getNextEntry(); entry != null; entry = zip.getNextEntry()) {
 				String name = entry.getName();
-				boolean failed = false;
-				Path p = Path.of(name);
-				for (Predicate<Path> predicate : allPredicates)
-					if (!predicate.test(p)) {
-						failed = true;
-						break;
-					}
-				if (!failed && !p.toString().isEmpty())
-					result.add(p);
+				filterFor(allPredicates, results, Path.of(name));
 			}
-			return result;
+			return results;
+		}
+	}
+
+	private static void filterFor(final List<Predicate<Path>> allPredicates, final List<Path> results, final Path p) {
+		boolean failed = false;
+		for (Predicate<Path> predicate : allPredicates)
+			if (!predicate.test(p)) {
+				failed = true;
+				break;
+			}
+		if (!p.toString().isEmpty() && !failed) {
+			log.debug("pathscan accepted [{}]", p.toString());
+			results.add(p);
 		}
 	}
 }
