@@ -21,9 +21,12 @@ public class ForName {
 			return null;
 		}
 		T instance = null;
-		Class<?>[] constructorParameterTypes = new Class<?>[constructorParameters.length];
-		Object[] constructorParameterInstances = new Object[constructorParameters.length];
-		for (int i = 0; i < constructorParameters.length; i++) {
+		int l = 0;
+		if (constructorParameters.length != 1 || constructorParameters[0] != null)
+			l = constructorParameters.length;
+		Class<?>[] constructorParameterTypes = new Class<?>[l];
+		Object[] constructorParameterInstances = new Object[l];
+		for (int i = 0; i < l; i++) {
 			ClassParam p = constructorParameters[i];
 			constructorParameterTypes[i] = p.getClazz();
 			constructorParameterInstances[i] = p.getInstance();
