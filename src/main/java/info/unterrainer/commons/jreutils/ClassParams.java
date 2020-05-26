@@ -1,17 +1,15 @@
 package info.unterrainer.commons.jreutils;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Singular;
 
+@Data
 @Builder()
 public class ClassParams {
 
 	@Singular
-	private List<ClassParam> params;
-
-	public ClassParam[] toArray() {
-		return params.toArray(new ClassParam[0]);
-	}
+	private Map<String, Object> params;
 }
