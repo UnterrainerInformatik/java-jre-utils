@@ -11,15 +11,24 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class ForName {
 
-	@SuppressWarnings("unchecked")
 	public static <T> T instantiate(final String fqn, final Class<T> type, final ClassParam... constructorParameters) {
+		Class<?> clazz = get(fqn);
+		return instantiate(clazz, type, constructorParameters);
+	}
+
+	public static Class<?> get(final String fqn) {
 		Class<?> clazz = null;
 		try {
 			clazz = Class.forName(fqn);
 		} catch (ClassNotFoundException e) {
 			log.warn("Could not load class of type [{}] by name", fqn, e);
-			return null;
 		}
+		return clazz;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T instantiate(final Class<?> clazz, final Class<T> type,
+			final ClassParam... constructorParameters) {
 		T instance = null;
 		int l = 0;
 		if (constructorParameters.length != 1 || constructorParameters[0] != null)
@@ -36,7 +45,7 @@ public class ForName {
 			instance = (T) clazz.getConstructor(constructorParameterTypes).newInstance(constructorParameterInstances);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
-			log.warn("Error instantiating [{}]. Could not find constructor({}).", fqn,
+			log.warn("Error instantiating [{}]. Could not find constructor({}).", clazz.getName(),
 					String.join(", ",
 							Arrays.asList(constructorParameterTypes)
 									.stream()
@@ -45,7 +54,8 @@ public class ForName {
 			return null;
 		}
 		if (!type.isAssignableFrom(instance.getClass())) {
-			log.warn("Error loading new [{}]. The class [{}] is not of type, or a subclass of [{}].", type, fqn, type);
+			log.warn("Error loading new [{}]. The class [{}] is not of type, or a subclass of [{}].", type,
+					clazz.getName(), type);
 			return null;
 		}
 		return instance;
