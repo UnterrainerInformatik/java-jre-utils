@@ -11,11 +11,28 @@ import lombok.extern.slf4j.Slf4j;
 @UtilityClass
 public class ForName {
 
+	/**
+	 * Loads and instantiates a class given by fully-qualified name.
+	 * 
+	 * @param <T>                   the type of the class to instantiate
+	 * @param fqn                   the fully-qualified name of the class to
+	 *                              instantiate
+	 * @param type                  the type of the class to instantiate
+	 * @param constructorParameters a list of {@link ClassParam} containing the
+	 *                              constructor parameters to use when instantiating
+	 * @return the new instance
+	 */
 	public static <T> T instantiate(final String fqn, final Class<T> type, final ClassParam... constructorParameters) {
 		Class<?> clazz = get(fqn);
 		return instantiate(clazz, type, constructorParameters);
 	}
 
+	/**
+	 * Loads and gets the handle to a class given a fully-qualified name.
+	 * 
+	 * @param fqn the fully-qualified name of the class to load
+	 * @return the class
+	 */
 	public static Class<?> get(final String fqn) {
 		Class<?> clazz = null;
 		try {
@@ -26,6 +43,16 @@ public class ForName {
 		return clazz;
 	}
 
+	/**
+	 * Loads and instantiates a class.
+	 * 
+	 * @param <T>                   the type of the class to instantiate
+	 * @param clazz                 the class to instantiate
+	 * @param type                  the type of the class to instantiate
+	 * @param constructorParameters a list of {@link ClassParam} containing the
+	 *                              constructor parameters to use when instantiating
+	 * @return the new instance
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T instantiate(final Class<?> clazz, final Class<T> type,
 			final ClassParam... constructorParameters) {

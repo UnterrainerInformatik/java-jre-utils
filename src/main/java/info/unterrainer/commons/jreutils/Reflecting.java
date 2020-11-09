@@ -11,12 +11,14 @@ import lombok.experimental.UtilityClass;
 public class Reflecting {
 
 	/**
-	 * Searches for annotated fields using reflection and returns their paths.
+	 * Scans object tree connected by annotated fields for a given class using
+	 * reflection and returns found paths.
 	 *
-	 * @param classToScan
-	 * @param fieldTypeToFind
-	 * @param annotationToScanFor
-	 * @return
+	 * @param classToScan         the class to start scanning in
+	 * @param fieldTypeToFind     the type to search for
+	 * @param annotationToScanFor the annotation the fields we should scan are
+	 *                            annotated with
+	 * @return a list of paths where the given fields have been found
 	 */
 	public List<String> getPathsOf(final Class<?> classToScan, final Class<?> fieldTypeToFind,
 			final Class<? extends Annotation> annotationToScanFor) {
@@ -41,6 +43,17 @@ public class Reflecting {
 		return paths;
 	}
 
+	/**
+	 * Gets the instance of a specific field given by path
+	 * 
+	 * @param <T>
+	 * @param path
+	 * @param instanceToSearchIn
+	 * @param annotationToScanFor
+	 * @return
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	public <T> T getFieldByPath(final String path, final Object instanceToSearchIn,
 			final Class<? extends Annotation> annotationToScanFor)
 			throws IllegalArgumentException, IllegalAccessException {
