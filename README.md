@@ -1,3 +1,10 @@
+![GitHub forks](https://img.shields.io/github/forks/UnterrainerInformatik/java-jre-utils?style=social) ![GitHub stars](https://img.shields.io/github/stars/UnterrainerInformatik/java-jre-utils?style=social) ![GitHub repo size](https://img.shields.io/github/repo-size/UnterrainerInformatik/java-jre-utils) [![GitHub issues](https://img.shields.io/github/issues/UnterrainerInformatik/java-jre-utils)](https://github.com/UnterrainerInformatik/java-jre-utils/issues)
+
+[![license](https://img.shields.io/github/license/unterrainerinformatik/FiniteStateMachine.svg?maxAge=2592000)](http://unlicense.org) [![Travis-build](https://travis-ci.org/UnterrainerInformatik/java-jre-utils.svg?branch=master)](https://travis-ci.org/github/UnterrainerInformatik/java-jre-utils) [![Maven Central](https://img.shields.io/maven-central/v/info.unterrainer.commons/jre-utils)](https://search.maven.org/artifact/org.webjars.npm/jre-utils) [![Twitter Follow](https://img.shields.io/twitter/follow/throbax.svg?style=social&label=Follow&maxAge=2592000)](https://twitter.com/throbax)
+
+
+
+
 # jre-utils
 
 A library to help with JRE stuff like `shutdownhooks` or reading resources.
