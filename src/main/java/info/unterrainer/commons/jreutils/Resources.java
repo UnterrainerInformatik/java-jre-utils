@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -130,11 +131,14 @@ public class Resources {
 
 		try {
 			URI uri = classLoaderSource.getResource(path).toURI();
-			if ("jar".equals(uri.getScheme()))
+			if ("jar".equals(uri.getScheme())) {
+				log.debug("Jar found. Running zip-walker.");
 				return walkJar(classLoaderSource, allPredicates);
-			else {
+			} else {
+				log.debug("Running file-walker.");
 				Path basePath = Paths.get(uri);
-				stream = Files.walk(basePath);
+				log.debug("Walking from base-directory: [{}]", basePath);
+				stream = Files.walk(basePath, Integer.MAX_VALUE, FileVisitOption.FOLLOW_LINKS);
 				List<Path> list = stream.collect(Collectors.toList());
 				List<Path> results = new ArrayList<>();
 				for (Path p : list)
@@ -142,6 +146,7 @@ public class Resources {
 				return results;
 			}
 		} catch (URISyntaxException e) {
+			log.error("This should never happen!", e);
 			// NOOP (never happens)
 		} finally {
 			if (stream != null)
