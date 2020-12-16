@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitOption;
@@ -42,6 +43,9 @@ public class Resources {
 	 */
 	public static String readResource(final Class<?> classLoaderSource, final String path) throws IOException {
 		InputStream inputStream = classLoaderSource.getResourceAsStream(path);
+		if (inputStream == null)
+			throw new FileNotFoundException(String.format("The file %s could not be found.", path));
+
 		StringBuilder textBuilder = new StringBuilder();
 		try (Reader reader = new BufferedReader(
 				new InputStreamReader(inputStream, Charset.forName(StandardCharsets.UTF_8.name())))) {
@@ -130,7 +134,11 @@ public class Resources {
 			path = "/";
 
 		try {
-			URI uri = classLoaderSource.getResource(path).toURI();
+			URL url = classLoaderSource.getResource(path);
+			if (url == null)
+				throw new FileNotFoundException(String.format("The file %s could not be found.", path));
+
+			URI uri = url.toURI();
 			if ("jar".equals(uri.getScheme())) {
 				log.debug("Jar found. Running zip-walker.");
 				return walkJar(classLoaderSource, allPredicates);
