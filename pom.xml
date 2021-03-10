@@ -10,7 +10,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jre-utils</artifactId>
-	<version>0.1.6</version>
+	<version>0.1.7</version>
 	<name>JreUtils</name>
 	<packaging>jar</packaging>
 	
@@ -25,7 +25,7 @@
 		<dependency>
 			<groupId>info.unterrainer.commons</groupId>
 			<artifactId>cli-utils</artifactId>
-			<version>0.2.8</version>
+			<version>0.2.9</version>
 		</dependency>
 	</dependencies>
 
