@@ -8,6 +8,12 @@
 		<version>0.1.3</version>
 	</parent>
 
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>jre-utils</artifactId>
+	<version>0.1.6</version>
+	<name>JreUtils</name>
+	<packaging>jar</packaging>
+	
 	<properties>
 		<mainclass>info.unterrainer.commons.jreutils.JreUtils</mainclass>
 		<name>JRE-Utils</name>
@@ -15,17 +21,11 @@
 		<packg-string>info.unterrainer.commons.jreutils</packg-string>
 	</properties>
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>jre-utils</artifactId>
-	<version>0.1.5</version>
-	<name>JreUtils</name>
-	<packaging>jar</packaging>
-
 	<dependencies>
 		<dependency>
 			<groupId>info.unterrainer.commons</groupId>
 			<artifactId>cli-utils</artifactId>
-			<version>0.2.5</version>
+			<version>0.2.8</version>
 		</dependency>
 	</dependencies>
 
