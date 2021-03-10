@@ -10,11 +10,14 @@
 
 	<properties>
 		<mainclass>info.unterrainer.commons.jreutils.JreUtils</mainclass>
+		<name>JRE-Utils</name>
+		<package-path>info/unterrainer/commons/jreutils</package-path>
+		<packg-string>info.unterrainer.commons.jreutils</packg-string>
 	</properties>
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jre-utils</artifactId>
-	<version>0.1.4</version>
+	<version>0.1.5</version>
 	<name>JreUtils</name>
 	<packaging>jar</packaging>
 
