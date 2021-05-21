@@ -13,7 +13,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class DateUtils {
 
-	public static DateTimeFormatter isoDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	public static DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
 	public static LocalDateTime nowUtc() {
 		return LocalDateTime.now(ZoneOffset.UTC);
@@ -31,6 +31,14 @@ public class DateUtils {
 		return dateTime.get(WeekFields.ISO.weekOfWeekBasedYear());
 	}
 
+	public static String localDateTimeToIso(final LocalDateTime localDateTime) {
+		return localDateTime.format(ISO_FORMATTER);
+	}
+
+	public static String zonedDateTimeToIso(final ZonedDateTime zonedDateTime) {
+		return zonedDateTime.format(ISO_FORMATTER);
+	}
+
 	/**
 	 * Converts a UTC-issued LocalDateTime to a LocalDateTime issued by the
 	 * time-zone specified by the timeZoneIdString.
@@ -46,7 +54,7 @@ public class DateUtils {
 	}
 
 	public static String utcLocalDateTimeToLocalFormat(final LocalDateTime utc, final String timeZoneIdString) {
-		return utcLocalDateTimeToLocalFormat(utc, timeZoneIdString, isoDateTimeFormatter);
+		return utcLocalDateTimeToLocalFormat(utc, timeZoneIdString, ISO_FORMATTER);
 	}
 
 	public static String utcLocalDateTimeToLocalFormat(final LocalDateTime utc, final String timeZoneIdString,
