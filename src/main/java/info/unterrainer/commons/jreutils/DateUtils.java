@@ -1,5 +1,6 @@
 package info.unterrainer.commons.jreutils;
 
+import java.nio.file.attribute.FileTime;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,6 +26,10 @@ public class DateUtils {
 
 	public static LocalDateTime epochToUtcLocalDateTime(final Long epoch) {
 		return Instant.ofEpochMilli(epoch).atZone(ZoneId.of("UTC")).toLocalDateTime();
+	}
+
+	public static LocalDateTime fileTimeToUtcLocalDateTime(final FileTime time) {
+		return time.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
 	}
 
 	public static int getWeekOf(final LocalDateTime dateTime) {
