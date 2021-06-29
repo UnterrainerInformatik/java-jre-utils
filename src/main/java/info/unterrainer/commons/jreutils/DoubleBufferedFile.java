@@ -133,6 +133,10 @@ public class DoubleBufferedFile {
 		path2.delete();
 	}
 
+	public boolean exists() {
+		return path1.exists() || path2.exists();
+	}
+
 	public LocalDateTime getNewestModifiedTime() {
 		if (path1.modified() == null && path2.modified() == null)
 			return null;
