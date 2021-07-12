@@ -9,6 +9,10 @@ import java.util.function.Function;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
+/**
+ * A synchronized data-structure acting as a table. You may create indexes for
+ * various columns of this table.
+ */
 @Accessors(fluent = true)
 public class DataTable<T> {
 

@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
+/**
+ * A synchronized, size-limited FIFO-queue.
+ */
 public class DataQueue<T> {
 
 	private CircularFifoQueue<T> queue;
