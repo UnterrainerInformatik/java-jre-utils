@@ -8,6 +8,9 @@ import java.util.Set;
 
 import lombok.NoArgsConstructor;
 
+/**
+ * A synchronized, size-limited hash-map.
+ */
 @NoArgsConstructor
 public class DataMap<K, V> {
 
