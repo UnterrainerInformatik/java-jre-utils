@@ -9,6 +9,69 @@
 
 A library to help with JRE stuff like `shutdownhooks` or reading resources.
 
+
+
+## Collections
+
+This package contains several collections I've come across and used in some programs.
+
+### DataQueue
+
+A synchronized, size-limited FIFO-queue.
+
+### SizeLimitedHashMap
+
+A normal HashMap, but limited in size.
+If there is a size-overflow, the oldest value will be discarded.
+
+### DataMap
+
+A synchronized, size-limited HashMap.
+
+### DataTable
+
+This is a data-structure that holds arbitrary objects in a DataQueue and you may or may not add one or many `indexes`, which will generate a DataMap for each index, using the given keySupplier to generate the key for each entry.
+
+When you add a new element, delete an element or clear the list, all indexes will be automatically equally affected.
+
+The indexes use minimal memory, since the references to the corresponding values is shared.
+
+```java
+DataTable<String> dt = new DataTable<>(String.class, 10);
+dt.addIndex("index1", e -> e);
+dt.addIndex("index2", e -> e);
+dt.add("test");
+assertThat(dt.get("index1", "test")).isEqualTo("test");
+assertThat(dt.get("index2", "test")).isEqualTo("test");
+```
+
+
+
+
+
+## DoubleBufferedFile
+
+This is a data-structure that is thread-safe and uses two files to persist itself.
+This way you have a file left, if something happens during persisting.
+
+```java
+DoubleBufferedFile dbf = new DoubleBufferedFile(Path.of("new"), "txt");
+dbf.write(w -> w.write("test_old"));
+dbf.write(w -> w.write("test_new"));
+String value = dbf.read() // is equal to "test_new"
+dbf.delete();
+```
+
+The above example generates two files: `new1.txt` and `new2.txt` and the accessors always give the correct file-handle to read or write-to.
+
+
+
+## DateUtils
+
+Offers some often used date-time conversions including UTC and ISO8601.
+
+
+
 ## ForName
 
 This helps you to load and instantiate classes that haven't already been loaded using a given class-loader. This is of great help to strip boilerplate code when doing stuff like plugin-systems or the like.
@@ -26,7 +89,7 @@ The special thing about these is, that they work in JAR-files AND server-deploym
 ## ShutdownHook
 
 If you'd like some code running before the Java-VM shuts down, then this is the way to go.
-I use it shutting down the EntityManagerFactory for some programs as gracefully as it gets.
+I use it for shutting down the EntityManagerFactory in some programs as gracefully as it gets.
 
 ### Example
 
