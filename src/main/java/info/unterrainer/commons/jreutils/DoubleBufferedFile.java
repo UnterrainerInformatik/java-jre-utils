@@ -211,6 +211,26 @@ public class DoubleBufferedFile {
 		return path2;
 	}
 
+	private DoubleBufferedFileData getOldestForReadAccess() throws IOException {
+		path1.probe();
+		path2.probe();
+		if (!path1.exists() && !path2.exists())
+			throw new IOException("There is no file to read from, because both files are missing.");
+		if (!path1.exists || !path2.exists())
+			throw new IOException("There is no file to read from, because the second file is missing.");
+
+		if (!path1.readable() && !path2.readable())
+			throw new IOException("Both files are locked for read-access.");
+		if (!path1.readable() || !path2.readable())
+			throw new IOException("The second file is locked for read-access.");
+
+		if (path1.modified() == null || path2.modified() == null)
+			throw new IOException("Could not read the modified-date from one of the files.");
+		if (path1.modified().compareTo(path2.modified()) > 0)
+			return path2;
+		return path1;
+	}
+
 	public void write(final ConsumerWithIoException<BufferedWriter> writeContentDelegate) throws IOException {
 		DoubleBufferedFileData p = getOldestForWriteAccess();
 		if (p.exists())
@@ -224,6 +244,11 @@ public class DoubleBufferedFile {
 
 	public String read() throws IOException {
 		DoubleBufferedFileData p = getNewestForReadAccess();
+		return Files.readString(p.path());
+	}
+
+	public String readOther() throws IOException {
+		DoubleBufferedFileData p = getOldestForReadAccess();
 		return Files.readString(p.path());
 	}
 }
