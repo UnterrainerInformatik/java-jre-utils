@@ -26,10 +26,26 @@ public class ExceptionsTests {
 	}
 
 	@Test
-	public void swallowsException() {
+	public void swallowsWhenExceptionMatches() {
 		Exceptions.swallow(() -> {
 			throw new IllegalArgumentException();
 		}, IllegalArgumentException.class, NumberFormatException.class);
+		assertTrue(true);
+	}
+
+	@Test
+	public void swallowsWhenCauseMatches() {
+		Exceptions.swallow(() -> {
+			throw new IllegalArgumentException("", new NumberFormatException());
+		}, NumberFormatException.class);
+		assertTrue(true);
+	}
+
+	@Test
+	public void swallowsWhenMultiLayeredCauseMatches() {
+		Exceptions.swallow(() -> {
+			throw new IllegalArgumentException("", new IllegalArgumentException("", new NumberFormatException()));
+		}, NumberFormatException.class);
 		assertTrue(true);
 	}
 }

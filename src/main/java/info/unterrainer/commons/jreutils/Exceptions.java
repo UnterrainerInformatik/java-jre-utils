@@ -39,7 +39,7 @@ public class Exceptions {
 	public static <T> T swallowReturning(final Supplier<T> supplier, final Class<?>... exceptions) {
 		try {
 			return supplier.get();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			if (!containsException(e, exceptions))
 				throw e;
 			return null;
@@ -95,7 +95,7 @@ public class Exceptions {
 		for (int i = 0; i < times; i++)
 			try {
 				result = supplier.get();
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (!containsException(e, exceptions) || i == times - 1)
 					throw e;
 				try {
@@ -107,10 +107,19 @@ public class Exceptions {
 		return result;
 	}
 
-	public static boolean containsException(final Exception e, final Class<?>... exceptions) {
+	public static boolean containsException(final Throwable e, final Class<?>... exceptions) {
 		for (Class<?> omit : exceptions)
-			if (omit.isAssignableFrom(e.getClass()))
+			if (equalsOrCauseEquals(e, omit))
 				return true;
+		return false;
+	}
+
+	private static boolean equalsOrCauseEquals(final Throwable e, final Class<?> omit) {
+		if (omit.isAssignableFrom(e.getClass()))
+			return true;
+		Throwable cause = e.getCause();
+		if (cause != null && equalsOrCauseEquals(cause, omit))
+			return true;
 		return false;
 	}
 }
