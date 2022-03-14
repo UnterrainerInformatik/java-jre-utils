@@ -44,15 +44,21 @@ public class Reflecting {
 	}
 
 	/**
-	 * Gets the instance of a specific field given by path
-	 * 
-	 * @param <T>
-	 * @param path
-	 * @param instanceToSearchIn
-	 * @param annotationToScanFor
-	 * @return
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * Gets the instance of a specific field given by path.
+	 *
+	 * @param <T>                 the type of the field to find
+	 * @param path                The path to follow in order to get to the field
+	 * @param instanceToSearchIn  the instance of the object to search for the field
+	 *                            in
+	 * @param annotationToScanFor the annotation that leads to the field to find
+	 * @return the field
+	 * @throws IllegalArgumentException if the specified object is not an instance
+	 *                                  of the class or interface declaring the
+	 *                                  underlying field (or a subclass or
+	 *                                  implementor thereof).
+	 * @throws IllegalAccessException   if this Field object is enforcing Java
+	 *                                  language access control and the underlying
+	 *                                  field is inaccessible.
 	 */
 	public <T> T getFieldByPath(final String path, final Object instanceToSearchIn,
 			final Class<? extends Annotation> annotationToScanFor)
