@@ -13,7 +13,7 @@ public class Lerp {
 	 * |   /
 	 * |  /
 	 * | /
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * @param a          the lower bound of the interval
@@ -36,7 +36,7 @@ public class Lerp {
 	 * |      /
 	 * |    /
 	 * |_--
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * @param a          the lower bound of the interval
@@ -59,7 +59,7 @@ public class Lerp {
 	 * |    /
 	 * |   /
 	 * |_--
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * @param a          the lower bound of the interval
@@ -83,7 +83,7 @@ public class Lerp {
 	 * |    |
 	 * |   /
 	 * |__-
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * @param a          the lower bound of the interval
@@ -107,7 +107,7 @@ public class Lerp {
 	 * |   /  \
 	 * |  /    \
 	 * | /      \
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * It's an arrowhead basically y=x for values [0, 0.5] and y=1-x for values
@@ -134,7 +134,7 @@ public class Lerp {
 	 * |      /  \
 	 * |     /    \
 	 * |__--        --__
-	 * ------------->
+	 * ------------------&gt;
 	 * </pre>
 	 *
 	 * The flanks are longer and it doesn't remain long on the plateau.
@@ -160,7 +160,7 @@ public class Lerp {
 	 * |    -  -
 	 * |   /    \
 	 * |_-        -_
-	 * ------------->
+	 * ---------------&gt;
 	 * </pre>
 	 *
 	 * A normal quadratic curve.
@@ -186,7 +186,7 @@ public class Lerp {
 	 * |   /   \
 	 * |  |     |
 	 * |_/       \_
-	 * ------------->
+	 * -------------&gt;
 	 * </pre>
 	 *
 	 * The flanks are steeper and it remains longer on the plateau.
