@@ -37,7 +37,8 @@ public class Resources {
 	 * Read a file from resources as a String. Works within JAR files as well, since
 	 * it's using the stream accessor.
 	 *
-	 * @param path the path of the file you want to read
+	 * @param classLoaderSource the classLoader to use when loading the resource
+	 * @param path              the path of the file you want to read
 	 * @return the contents of the file as a String
 	 * @throws IOException if there is a problem opening or reading the file given
 	 */
@@ -63,6 +64,7 @@ public class Resources {
 	 * This method starts walking the tree in the base-directory (so it walks all
 	 * the files within your distribution).
 	 *
+	 * @param classLoaderSource the classLoader to use when walking the tree
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */
@@ -81,7 +83,8 @@ public class Resources {
 	 * This method strips the base-path you have given from the result file-names so
 	 * you can easily get those with class.getResource().
 	 *
-	 * @param path the path to start searching in
+	 * @param classLoaderSource the classLoader to use when walking the tree
+	 * @param path              the path to start searching in
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */
@@ -96,8 +99,9 @@ public class Resources {
 	 * This method starts walking the tree in the base-directory (so it walks all
 	 * the files within your distribution).
 	 *
-	 * @param fileNameFilters a single or multiple filters to match the file-names
-	 *                        against (and is implied)
+	 * @param classLoaderSource the classLoader to use when walking the tree
+	 * @param fileNameFilters   a single or multiple filters to match the file-names
+	 *                          against (and is implied)
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */
@@ -118,9 +122,10 @@ public class Resources {
 	 * This method strips the base-path you have given from the result file-names so
 	 * you can easily get those with class.getResource().
 	 *
-	 * @param relativePath    the path to start searching in
-	 * @param fileNameFilters a single or multiple filters to match the file-names
-	 *                        against (and is implied)
+	 * @param classLoaderSource the classLoader to use when walking the tree
+	 * @param relativePath      the path to start searching in
+	 * @param fileNameFilters   a single or multiple filters to match the file-names
+	 *                          against (and is implied)
 	 * @return the List of Paths
 	 * @throws IOException if something went wrong opening a directory
 	 */

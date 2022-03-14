@@ -35,7 +35,7 @@ public class Randomizer {
 	 * Gets the next pseudorandom, uniformly distributed integer within the interval
 	 * [Integer.MIN_VALUE, Integer.MAX_VALUE].
 	 *
-	 * @return the next int within the given interval
+	 * @return the next integer within the given interval
 	 */
 	public int nextInt() {
 		return random.nextInt();
@@ -72,7 +72,7 @@ public class Randomizer {
 
 	/**
 	 * Gets the next double within the interval [minimum, maximum]. Swaps minimum
-	 * and maximum if minimum > maximum.
+	 * and maximum if minimum &gt; maximum.
 	 *
 	 * @param minimum the lower bound
 	 * @param maximum the upper bound
@@ -90,7 +90,7 @@ public class Randomizer {
 
 	/**
 	 * Gets the next float within the interval [minimum, maximum]. Swaps minimum and
-	 * maximum if minimum > maximum.
+	 * maximum if minimum &gt; maximum.
 	 *
 	 * @param minimum the lower bound
 	 * @param maximum the upper bound
@@ -102,7 +102,7 @@ public class Randomizer {
 
 	/**
 	 * Gets the next integer within the interval [minimum, maximum]. Swaps minimum
-	 * and maximum if minimum > maximum.
+	 * and maximum if minimum &gt; maximum.
 	 *
 	 * @param minimum the lower bound
 	 * @param maximum the upper bound
@@ -117,7 +117,7 @@ public class Randomizer {
 
 	/**
 	 * Gets the next long within the interval [minimum, maximum]. Swaps minimum and
-	 * maximum if minimum > maximum.
+	 * maximum if minimum &gt; maximum.
 	 *
 	 * @param minimum the lower bound
 	 * @param maximum the upper bound
