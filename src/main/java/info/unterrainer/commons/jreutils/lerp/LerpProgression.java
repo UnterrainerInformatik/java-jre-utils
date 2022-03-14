@@ -1,0 +1,18 @@
+package info.unterrainer.commons.jreutils.lerp;
+
+public enum LerpProgression {
+
+	LINEAR,
+	QUADRATIC,
+	CUBIC,
+	EXPONENTIAL,
+	BIDIRECTIONAL_LINEAR,
+	BIDIRECTIONAL_QUADRATIC_QUICK,
+	BIDIRECTIONAL_QUADRATIC,
+	BIDIRECTIONAL_QUADRATIC_SLOW;
+
+	public boolean isBidirectional() {
+		return this == BIDIRECTIONAL_LINEAR || this == BIDIRECTIONAL_QUADRATIC || this == BIDIRECTIONAL_QUADRATIC_QUICK
+				|| this == BIDIRECTIONAL_QUADRATIC_SLOW;
+	}
+}
