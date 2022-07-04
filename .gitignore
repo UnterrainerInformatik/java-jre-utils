@@ -28,3 +28,7 @@ src/main/java/info/unterrainer/commons/jreutils/Information.java
 .settings/
 
 .classpath
+
+bin/
+
+dependency-reduced-pom.xml
