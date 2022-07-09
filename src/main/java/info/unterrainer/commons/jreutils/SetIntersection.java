@@ -20,13 +20,13 @@ public class SetIntersection {
 	private final Set<String> leave;
 
 	public static SetIntersection of(final Set<String> before, final Set<String> after) {
-		Set<String> create = new HashSet<>(before);
-		create.removeAll(after);
+		Set<String> create = new HashSet<>(after);
+		create.removeAll(before);
 
-		Set<String> delete = new HashSet<>(after);
-		delete.removeAll(before);
+		Set<String> delete = new HashSet<>(before);
+		delete.removeAll(after);
 
-		Set<String> leave = new HashSet<>(before);
+		Set<String> leave = new HashSet<>(after);
 		leave.removeAll(create);
 
 		return new SetIntersection(before, after, create, delete, leave);
