@@ -33,12 +33,9 @@ public class DataQueue<T> {
 
 	/**
 	 * Inserts the specified element into this queue if it is possible to do so
-	 * immediately without violating capacity restrictions. When using a
-	 * capacity-restricted queue, this method is generally preferable to
-	 * {@link #add}, which can fail to insert an element only by throwing an
-	 * exception.
+	 * immediately without violating capacity restrictions.
 	 *
-	 * @param e the element to add
+	 * @param element the element to add
 	 * @return this instance to provide a fluent interface
 	 * @throws ClassCastException       if the class of the specified element
 	 *                                  prevents it from being added to this queue

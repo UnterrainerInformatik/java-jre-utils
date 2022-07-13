@@ -1,8 +1,10 @@
 package info.unterrainer.commons.jreutils.collections;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
@@ -12,7 +14,12 @@ import lombok.experimental.Accessors;
 
 /**
  * A synchronized data-structure acting as a table. You may create indexes for
- * various columns of this table.
+ * various columns and later on retrieve sets of index-keys or the indexed
+ * values.<br>
+ * You also may specify fragmenting indexes, that define an additional filter
+ * that then is applied on inserting a value. The value will then only be added
+ * to a specific index, if the filter is satisfied. This allows for
+ * runtime-efficient table-fragmentation.
  */
 @Accessors(fluent = true)
 public class DataTable<T> {
@@ -156,9 +163,51 @@ public class DataTable<T> {
 		return this;
 	}
 
+	/**
+	 * Gets a list of all the elements in this DataTable as an detached
+	 * offline-copy.
+	 *
+	 * @return the list
+	 */
+	public synchronized List<T> toList() {
+		return queue.getListClone();
+	}
+
+	/**
+	 * Get a list of the elements in this DataTable, that are in the given index, as
+	 * an detached offline-copy.
+	 *
+	 * @param name the name of the index to get the elements from
+	 * @return the list
+	 */
+	public synchronized List<T> toList(final String name) {
+		List<T> list = new ArrayList<>();
+		list.addAll(maps.get(name).values());
+		return list;
+	}
+
+	/**
+	 * Gets an array of all the elements in this DataTable as an detached
+	 * offline-copy.
+	 *
+	 * @return the array
+	 */
 	@SuppressWarnings("unchecked")
 	public synchronized T[] toArray() {
 		T[] zeroArray = (T[]) Array.newInstance(clazz, 0);
 		return queue.getListClone().toArray(zeroArray);
+	}
+
+	/**
+	 * Get an array of the elements in this DataTable, that are in the given index,
+	 * as an detached offline-copy.
+	 *
+	 * @param name the name of the index to get the elements from
+	 * @return the array
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized T[] toArray(final String name) {
+		T[] zeroArray = (T[]) Array.newInstance(clazz, 0);
+		return toList(name).toArray(zeroArray);
 	}
 }
