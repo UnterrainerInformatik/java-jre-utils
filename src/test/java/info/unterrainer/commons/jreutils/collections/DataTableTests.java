@@ -119,5 +119,8 @@ public class DataTableTests {
 
 		assertThat(dt.keySet("index1")).containsExactly("item1", "item2");
 		assertThat(dt.keySet("index2")).containsExactly("other1", "other2");
+
+		assertThat(dt.keyList("index1")).containsExactly("item1", "item2");
+		assertThat(dt.keyList("index2")).containsExactly("other1", "other2");
 	}
 }
