@@ -25,7 +25,6 @@ public class DataTable<T> {
 	private HashMap<String, Function<T, Object>> keySuppliers = new HashMap<>();
 	private HashMap<String, Function<T, Boolean>> filters = new HashMap<>();
 	private HashMap<String, DataMap<Object, T>> maps = new HashMap<>();
-	private T[] elements;
 
 	public DataTable(final Class<T> clazz, final int maxEntries) {
 		this.clazz = clazz;
