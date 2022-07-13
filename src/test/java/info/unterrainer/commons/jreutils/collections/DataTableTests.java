@@ -76,4 +76,30 @@ public class DataTableTests {
 		assertThat(dt.get("index1", "test")).isNull();
 		assertThat(dt.get("index2", "test")).isNull();
 	}
+
+	@Test
+	public void addingTwoFragmentationsWorks() {
+		DataTable<String> dt = new DataTable<>(String.class, 10);
+		dt.addIndex("index1", e -> e, e -> e.startsWith("item"));
+		dt.addIndex("index2", e -> e, e -> e.startsWith("other"));
+
+		dt.add("item1");
+		dt.add("item2");
+
+		dt.add("other1");
+		dt.add("other2");
+
+		assertThat(dt.get("index1", "item1")).isEqualTo("item1");
+		assertThat(dt.get("index1", "item2")).isEqualTo("item2");
+		assertThat(dt.get("index1", "other1")).isNull();
+		assertThat(dt.get("index1", "other2")).isNull();
+
+		assertThat(dt.get("index2", "other1")).isEqualTo("other1");
+		assertThat(dt.get("index2", "other2")).isEqualTo("other2");
+		assertThat(dt.get("index2", "item1")).isNull();
+		assertThat(dt.get("index2", "item2")).isNull();
+
+		assertThat(dt.keySet("index1")).containsExactly("item1", "item2");
+		assertThat(dt.keySet("index2")).containsExactly("other1", "other2");
+	}
 }
