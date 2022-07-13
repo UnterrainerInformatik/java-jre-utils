@@ -41,6 +41,8 @@ public class DataTableTests {
 		dt.addIndex("index1", e -> e);
 		dt.add("test");
 		assertThat(dt.get("index1", "test")).isEqualTo("test");
+		assertThat(dt.toArray("index1")).containsExactly("test");
+		assertThat(dt.toList("index1")).containsExactly("test");
 	}
 
 	@Test
@@ -50,7 +52,11 @@ public class DataTableTests {
 		dt.addIndex("index2", e -> e);
 		dt.add("test");
 		assertThat(dt.get("index1", "test")).isEqualTo("test");
+		assertThat(dt.toArray("index1")).containsExactly("test");
+		assertThat(dt.toList("index1")).containsExactly("test");
 		assertThat(dt.get("index2", "test")).isEqualTo("test");
+		assertThat(dt.toArray("index2")).containsExactly("test");
+		assertThat(dt.toList("index2")).containsExactly("test");
 	}
 
 	@Test
@@ -61,7 +67,11 @@ public class DataTableTests {
 		dt.add("test");
 		dt.poll();
 		assertThat(dt.get("index1", "test")).isNull();
+		assertThat(dt.toArray("index1")).isEmpty();
+		assertThat(dt.toList("index1")).isEmpty();
 		assertThat(dt.get("index2", "test")).isNull();
+		assertThat(dt.toArray("index2")).isEmpty();
+		assertThat(dt.toList("index2")).isEmpty();
 	}
 
 	@Test
@@ -74,7 +84,11 @@ public class DataTableTests {
 		assertThat(dt.peek()).isNull();
 		assertThat(dt.poll()).isNull();
 		assertThat(dt.get("index1", "test")).isNull();
+		assertThat(dt.toArray("index1")).isEmpty();
+		assertThat(dt.toList("index1")).isEmpty();
 		assertThat(dt.get("index2", "test")).isNull();
+		assertThat(dt.toArray("index2")).isEmpty();
+		assertThat(dt.toList("index2")).isEmpty();
 	}
 
 	@Test
@@ -93,11 +107,15 @@ public class DataTableTests {
 		assertThat(dt.get("index1", "item2")).isEqualTo("item2");
 		assertThat(dt.get("index1", "other1")).isNull();
 		assertThat(dt.get("index1", "other2")).isNull();
+		assertThat(dt.toArray("index1")).containsExactly("item1", "item2");
+		assertThat(dt.toList("index1")).containsExactly("item1", "item2");
 
 		assertThat(dt.get("index2", "other1")).isEqualTo("other1");
 		assertThat(dt.get("index2", "other2")).isEqualTo("other2");
 		assertThat(dt.get("index2", "item1")).isNull();
 		assertThat(dt.get("index2", "item2")).isNull();
+		assertThat(dt.toArray("index2")).containsExactly("other1", "other2");
+		assertThat(dt.toList("index2")).containsExactly("other1", "other2");
 
 		assertThat(dt.keySet("index1")).containsExactly("item1", "item2");
 		assertThat(dt.keySet("index2")).containsExactly("other1", "other2");
