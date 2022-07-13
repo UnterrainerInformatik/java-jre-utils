@@ -128,6 +128,20 @@ public class DataTable<T> {
 		return (Set<K>) maps.get(name).keySet();
 	}
 
+	/**
+	 * Get a list of keys for a given index.
+	 *
+	 * @param <K>  the type of the key for the given index
+	 * @param name the name of the index to get the keys from
+	 * @return a list of keys
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized <K> List<K> keyList(final String name) {
+		List<K> list = new ArrayList<>();
+		list.addAll((Set<K>) maps.get(name).keySet());
+		return list;
+	}
+
 	public synchronized Collection<T> values(final String name) {
 		return maps.get(name).values();
 	}
