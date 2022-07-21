@@ -91,10 +91,9 @@ public class Exceptions {
 	@SafeVarargs
 	public static <T> T retryReturning(final int times, final long backOffInMillis, final Supplier<T> supplier,
 			final Class<?>... exceptions) {
-		T result = null;
 		for (int i = 0; i < times; i++)
 			try {
-				result = supplier.get();
+				return supplier.get();
 			} catch (Throwable e) {
 				if (!containsException(e, exceptions) || i == times - 1)
 					throw e;
@@ -104,7 +103,7 @@ public class Exceptions {
 					Thread.currentThread().interrupt();
 				}
 			}
-		return result;
+		return null;
 	}
 
 	public static boolean containsException(final Throwable e, final Class<?>... exceptions) {
