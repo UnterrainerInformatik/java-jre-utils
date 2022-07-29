@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.WeekFields;
 
 import lombok.experimental.UtilityClass;
@@ -22,7 +21,7 @@ public class DateUtils {
 	}
 
 	public static Long utcLocalDateTimeToEpoch(final LocalDateTime utc) {
-		return ChronoUnit.MICROS.between(Instant.EPOCH, utc.atZone(ZoneId.of("UTC")).toInstant());
+		return utc.atZone(ZoneId.of("UTC")).toInstant().toEpochMilli();
 	}
 
 	public static LocalDateTime epochToUtcLocalDateTime(final Long epoch) {
