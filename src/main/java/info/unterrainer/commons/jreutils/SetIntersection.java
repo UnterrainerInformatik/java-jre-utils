@@ -10,25 +10,25 @@ import lombok.experimental.SuperBuilder;
 @Data
 @RequiredArgsConstructor
 @SuperBuilder()
-public class SetIntersection {
+public class SetIntersection<T> {
 
-	private final Set<String> before;
-	private final Set<String> after;
+	private final Set<T> before;
+	private final Set<T> after;
 
-	private final Set<String> create;
-	private final Set<String> delete;
-	private final Set<String> leave;
+	private final Set<T> create;
+	private final Set<T> delete;
+	private final Set<T> leave;
 
-	public static SetIntersection of(final Set<String> before, final Set<String> after) {
-		Set<String> create = new HashSet<>(after);
+	public static <T> SetIntersection<T> of(final Set<T> before, final Set<T> after) {
+		Set<T> create = new HashSet<>(after);
 		create.removeAll(before);
 
-		Set<String> delete = new HashSet<>(before);
+		Set<T> delete = new HashSet<>(before);
 		delete.removeAll(after);
 
-		Set<String> leave = new HashSet<>(after);
+		Set<T> leave = new HashSet<>(after);
 		leave.removeAll(create);
 
-		return new SetIntersection(before, after, create, delete, leave);
+		return new SetIntersection<>(before, after, create, delete, leave);
 	}
 }
