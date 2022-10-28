@@ -28,7 +28,13 @@ public class Reflecting {
 	private List<String> getPathsOf(final Class<?> classToScan, final Class<?> typeToFind,
 			final Class<? extends Annotation> annotation, final String currentPath) {
 		List<String> paths = new ArrayList<>();
+		getInheritedFields(classToScan, typeToFind, annotation, currentPath, paths);
+		getFields(classToScan, typeToFind, annotation, currentPath, paths);
+		return paths;
+	}
 
+	private void getFields(final Class<?> classToScan, final Class<?> typeToFind,
+			final Class<? extends Annotation> annotation, final String currentPath, final List<String> paths) {
 		for (Field field : classToScan.getDeclaredFields()) {
 
 			Class<?> currentType = field.getType();
@@ -40,7 +46,15 @@ public class Reflecting {
 				paths.addAll(getPathsOf(currentType, typeToFind, annotation, currentPath + field.getName() + "."));
 			}
 		}
-		return paths;
+	}
+
+	private void getInheritedFields(final Class<?> classToScan, final Class<?> typeToFind,
+			final Class<? extends Annotation> annotation, final String currentPath, final List<String> paths) {
+		Class<?> c = classToScan.getSuperclass();
+		while (c != null) {
+			paths.addAll(getPathsOf(c, typeToFind, annotation, currentPath));
+			c = c.getSuperclass();
+		}
 	}
 
 	/**

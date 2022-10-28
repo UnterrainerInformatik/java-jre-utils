@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class TestClass {
+public class Test1Class {
 
 	private String name;
 	@ContainsMyType
@@ -20,5 +20,5 @@ public class TestClass {
 	private MyType[] myTypeArray = new MyType[9];
 	private String className;
 	@ContainsMyType
-	private TestSubClass subClass = new TestSubClass();
+	private Test1OtherClass usedClass = new Test1OtherClass();
 }
