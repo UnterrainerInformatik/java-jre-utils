@@ -3,7 +3,7 @@ package info.unterrainer.commons.jreutils.dtos;
 import lombok.Data;
 
 @Data
-public class TestSubClass {
+public class Test1OtherClass {
 
 	private String name;
 	@ContainsMyType

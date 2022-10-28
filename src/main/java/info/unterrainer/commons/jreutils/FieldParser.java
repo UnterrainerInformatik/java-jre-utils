@@ -34,23 +34,32 @@ class FieldParser {
 	}
 
 	public <T> T parse() throws IllegalArgumentException, IllegalAccessException {
-		return parse(instanceToSearchIn);
+		return parse(instanceToSearchIn, instanceToSearchIn.getClass());
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T parse(final Object instance) throws IllegalArgumentException, IllegalAccessException {
+	private <T> T parse(final Object instance, final Class<?> clazz)
+			throws IllegalArgumentException, IllegalAccessException {
 		if (pathArray.length == 0)
 			return null;
 
-		for (Field field : instance.getClass().getDeclaredFields())
+		for (Field field : clazz.getDeclaredFields())
 			if (field.isAnnotationPresent(annotation) && field.getName().equals(current)) {
 				field.setAccessible(true);
 				Object fieldInstance = field.get(instance);
 				if (isLast)
 					return (T) fieldInstance;
 				advance();
-				return parse(fieldInstance);
+				return parse(fieldInstance, fieldInstance.getClass());
 			}
+
+		Class<?> c = clazz.getSuperclass();
+		while (c != null) {
+			T inst = parse(instance, c);
+			if (inst != null)
+				return inst;
+			c = c.getSuperclass();
+		}
 		return null;
 	}
 }
