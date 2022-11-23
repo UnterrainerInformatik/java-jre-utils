@@ -2,6 +2,7 @@ package info.unterrainer.commons.jreutils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +15,8 @@ class FieldParser {
 	private String[] pathArray;
 	private int pos = -1;
 	private String current;
+	private String currentPlain;
+	private Integer currentIndex;
 	private boolean isLast;
 
 	public FieldParser(final String path, final Object instanceToSearchIn,
@@ -31,6 +34,8 @@ class FieldParser {
 		if (pos > pathArray.length - 1)
 			current = null;
 		current = pathArray[pos];
+		currentPlain = withoutIndex(current);
+		currentIndex = index(current);
 	}
 
 	public <T> T parse() throws IllegalArgumentException, IllegalAccessException {
@@ -43,15 +48,16 @@ class FieldParser {
 		if (pathArray.length == 0)
 			return null;
 
-		for (Field field : clazz.getDeclaredFields())
-			if (field.isAnnotationPresent(annotation) && field.getName().equals(current)) {
+		for (Field field : clazz.getDeclaredFields()) {
+			if (field.isAnnotationPresent(annotation) && field.getName().equals(currentPlain)) {
 				field.setAccessible(true);
-				Object fieldInstance = field.get(instance);
+				Object fieldInstance = resolveInstanceOf(instance, field);
 				if (isLast)
 					return (T) fieldInstance;
 				advance();
 				return parse(fieldInstance, fieldInstance.getClass());
 			}
+		}
 
 		Class<?> c = clazz.getSuperclass();
 		while (c != null) {
@@ -61,5 +67,39 @@ class FieldParser {
 			c = c.getSuperclass();
 		}
 		return null;
+	}
+
+	private Object resolveInstanceOf(Object instance, Field field)
+			throws IllegalArgumentException, IllegalAccessException {
+		Object fieldInstance = field.get(instance);
+		Class<?> currentType = field.getType();
+		if (currentIndex == null)
+			return fieldInstance;
+
+		if (List.class.isAssignableFrom(currentType)) {
+			return ((List<?>) fieldInstance).get(currentIndex);
+		}
+		if (currentType.isArray()) {
+			return ((Object[]) fieldInstance)[currentIndex];
+		}
+		return fieldInstance;
+	}
+
+	private String withoutIndex(String current) {
+		int pos = current.indexOf(":");
+		if (pos == -1)
+			return current;
+		return current.substring(0, pos);
+	}
+
+	private Integer index(String current) {
+		try {
+			int pos = current.indexOf(":");
+			if (pos == -1)
+				return null;
+			return Integer.parseInt(current.substring(pos + 1));
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 }
