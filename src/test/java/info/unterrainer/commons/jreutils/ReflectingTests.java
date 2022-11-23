@@ -19,13 +19,13 @@ public class ReflectingTests {
 		List<String> results = Reflecting.getPathsOf(Test1Class.class, MyType.class, ContainsMyType.class);
 		assertThat(results).containsAll(List.of("myType", "usedClass.myType"));
 	}
-	
+
 	@Test
 	public void TestReadingFieldsContainsFieldsInArrays() {
 		List<String> results = Reflecting.getPathsOf(Test1Class.class, MyType.class, ContainsMyType.class);
 		assertThat(results).containsAll(List.of("myTypeArray", "usedClassArray.myType"));
 	}
-	
+
 	@Test
 	public void TestReadingFieldsContainsFieldsInGenericLists() {
 		List<String> results = Reflecting.getPathsOf(Test1Class.class, MyType.class, ContainsMyType.class);
@@ -52,7 +52,7 @@ public class ReflectingTests {
 		assertThat(tc.getMyTypeArray()[1].getName()).isNull();
 		assertThat(tc.getMyTypeArray()[3].getName()).isEqualTo("gluppy");
 	}
-	
+
 	@Test
 	public void TestWritingOfFieldInList() throws IllegalArgumentException, IllegalAccessException {
 		Test1Class tc = new Test1Class();
@@ -64,7 +64,7 @@ public class ReflectingTests {
 		assertThat(tc.getMyTypeList().get(1).getName()).isNull();
 		assertThat(tc.getMyTypeList().get(3).getName()).isEqualTo("gluppy");
 	}
-	
+
 	@Test
 	public void TestWritingOfFieldInUsedClassInArray() throws IllegalArgumentException, IllegalAccessException {
 		Test1Class tc = new Test1Class();
@@ -76,7 +76,7 @@ public class ReflectingTests {
 		assertThat(tc.getUsedClassArray()[1].getMyType().getName()).isNull();
 		assertThat(tc.getUsedClassArray()[2].getMyType().getName()).isEqualTo("gluppy");
 	}
-	
+
 	@Test
 	public void TestWritingOfFieldInUsedClassInList() throws IllegalArgumentException, IllegalAccessException {
 		Test1Class tc = new Test1Class();
@@ -88,7 +88,40 @@ public class ReflectingTests {
 		assertThat(tc.getUsedClassList().get(1).getMyType().getName()).isNull();
 		assertThat(tc.getUsedClassList().get(2).getMyType().getName()).isEqualTo("gluppy");
 	}
-	
+
+	@Test
+	public void TestIndexOfListEmptyReturnsFirstEntry() throws IllegalArgumentException, IllegalAccessException {
+		Test1Class tc = new Test1Class();
+		MyType mt = Reflecting.getFieldByPath("usedClassList.myType", tc, ContainsMyType.class);
+		mt.setName("blubb");
+		assertThat(tc.getUsedClassList().get(0).getMyType().getName()).isEqualTo("blubb");
+	}
+
+	@Test
+	public void TestIndexOfListOverflowJustStartsFromBeginning()
+			throws IllegalArgumentException, IllegalAccessException {
+		Test1Class tc = new Test1Class();
+		MyType mt = Reflecting.getFieldByPath("usedClassList:3.myType", tc, ContainsMyType.class);
+		mt.setName("blubb");
+		assertThat(tc.getUsedClassList().get(0).getMyType().getName()).isEqualTo("blubb");
+	}
+
+	@Test
+	public void TestIndexOfListUnderflowJustStartsFromTheEnd() throws IllegalArgumentException, IllegalAccessException {
+		Test1Class tc = new Test1Class();
+		MyType mt = Reflecting.getFieldByPath("usedClassList:-1.myType", tc, ContainsMyType.class);
+		mt.setName("blubb");
+		assertThat(tc.getUsedClassList().get(2).getMyType().getName()).isEqualTo("blubb");
+	}
+
+	@Test
+	public void TestIndexOfListNegativeOverflowWrapsAsWell() throws IllegalArgumentException, IllegalAccessException {
+		Test1Class tc = new Test1Class();
+		MyType mt = Reflecting.getFieldByPath("usedClassList:-4.myType", tc, ContainsMyType.class);
+		mt.setName("blubb");
+		assertThat(tc.getUsedClassList().get(2).getMyType().getName()).isEqualTo("blubb");
+	}
+
 	@Test
 	public void TestWritingOfFieldInUsedClass() throws IllegalArgumentException, IllegalAccessException {
 		Test1Class tc = new Test1Class();

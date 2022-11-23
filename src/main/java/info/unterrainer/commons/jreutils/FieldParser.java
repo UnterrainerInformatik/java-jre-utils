@@ -48,7 +48,7 @@ class FieldParser {
 		if (pathArray.length == 0)
 			return null;
 
-		for (Field field : clazz.getDeclaredFields()) {
+		for (Field field : clazz.getDeclaredFields())
 			if (field.isAnnotationPresent(annotation) && field.getName().equals(currentPlain)) {
 				field.setAccessible(true);
 				Object fieldInstance = resolveInstanceOf(instance, field);
@@ -57,7 +57,6 @@ class FieldParser {
 				advance();
 				return parse(fieldInstance, fieldInstance.getClass());
 			}
-		}
 
 		Class<?> c = clazz.getSuperclass();
 		while (c != null) {
@@ -69,30 +68,40 @@ class FieldParser {
 		return null;
 	}
 
-	private Object resolveInstanceOf(Object instance, Field field)
+	private Object resolveInstanceOf(final Object instance, final Field field)
 			throws IllegalArgumentException, IllegalAccessException {
 		Object fieldInstance = field.get(instance);
 		Class<?> currentType = field.getType();
 		if (currentIndex == null)
-			return fieldInstance;
+			currentIndex = 0;
 
 		if (List.class.isAssignableFrom(currentType)) {
+			int size = ((List<?>) fieldInstance).size();
+			currentIndex = cap(currentIndex, size);
 			return ((List<?>) fieldInstance).get(currentIndex);
 		}
 		if (currentType.isArray()) {
+			int size = ((Object[]) fieldInstance).length;
+			currentIndex = cap(currentIndex, size);
 			return ((Object[]) fieldInstance)[currentIndex];
 		}
 		return fieldInstance;
 	}
 
-	private String withoutIndex(String current) {
+	private int cap(final int index, final int size) {
+		if (index >= 0)
+			return index % size;
+		return index % size + size;
+	}
+
+	private String withoutIndex(final String current) {
 		int pos = current.indexOf(":");
 		if (pos == -1)
 			return current;
 		return current.substring(0, pos);
 	}
 
-	private Integer index(String current) {
+	private Integer index(final String current) {
 		try {
 			int pos = current.indexOf(":");
 			if (pos == -1)
