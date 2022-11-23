@@ -2,6 +2,7 @@ package info.unterrainer.commons.jreutils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,10 @@ public class Reflecting {
 
 	/**
 	 * Scans object tree connected by annotated fields for a given class using
-	 * reflection and returns found paths.
+	 * reflection and returns found paths.<br>
+	 * <br>
+	 * Resolves generic Lists and Arrays as well (example for indexing:
+	 * 'myField.myArray:0.myVar')
 	 *
 	 * @param classToScan         the class to start scanning in
 	 * @param fieldTypeToFind     the type to search for
@@ -37,8 +41,8 @@ public class Reflecting {
 			final Class<? extends Annotation> annotation, final String currentPath, final List<String> paths) {
 		for (Field field : classToScan.getDeclaredFields()) {
 
-			Class<?> currentType = field.getType();
 			if (field.isAnnotationPresent(annotation)) {
+				Class<?> currentType = resolveTypeOf(field);
 				if (typeToFind.isAssignableFrom(currentType)) {
 					paths.add(currentPath + field.getName());
 					continue;
@@ -46,6 +50,18 @@ public class Reflecting {
 				paths.addAll(getPathsOf(currentType, typeToFind, annotation, currentPath + field.getName() + "."));
 			}
 		}
+	}
+
+	private Class<?> resolveTypeOf(Field field) {
+		Class<?> currentType = field.getType();
+		if (List.class.isAssignableFrom(currentType)) {
+			ParameterizedType pt = (ParameterizedType) field.getGenericType();
+			return (Class<?>) pt.getActualTypeArguments()[0];
+		}
+		if (currentType.isArray()) {
+			currentType = currentType.getComponentType();
+		}
+		return currentType;
 	}
 
 	private void getInheritedFields(final Class<?> classToScan, final Class<?> typeToFind,
@@ -58,7 +74,10 @@ public class Reflecting {
 	}
 
 	/**
-	 * Gets the instance of a specific field given by path.
+	 * Gets the instance of a specific field given by path.<br>
+	 * <br>
+	 * Resolves generic Lists and Arrays as well (example for indexing:
+	 * 'myField.myList:2.myVar')
 	 *
 	 * @param <T>                 the type of the field to find
 	 * @param path                The path to follow in order to get to the field
