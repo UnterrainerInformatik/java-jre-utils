@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
 
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
+
 import lombok.Getter;
 import lombok.experimental.Accessors;
 
@@ -33,6 +36,10 @@ public class DataTable<T> {
 	private HashMap<String, Function<T, Boolean>> filters = new HashMap<>();
 	private HashMap<String, DataMap<Object, T>> maps = new HashMap<>();
 
+	private HashMap<String, Function<T, Object>> multiKeySuppliers = new HashMap<>();
+	private HashMap<String, Function<T, Boolean>> multiFilters = new HashMap<>();
+	private HashMap<String, MultiValuedMap<Object, T>> multiMaps = new HashMap<>();
+
 	public DataTable(final Class<T> clazz, final int maxEntries) {
 		this.clazz = clazz;
 		this.maxEntries = maxEntries;
@@ -43,13 +50,27 @@ public class DataTable<T> {
 		return addIndex(name, keySupplier, null);
 	}
 
+	public <K> DataTable<T> addMultiIndex(final String name, final Function<T, K> keySupplier) {
+		return addMultiIndex(name, keySupplier, null);
+	}
+
 	@SuppressWarnings("unchecked")
 	public <K> DataTable<T> addIndex(final String name, final Function<T, K> keySupplier,
 			final Function<T, Boolean> filter) {
 		keySuppliers.put(name, (Function<T, Object>) keySupplier);
 		if (filter != null)
 			filters.put(name, filter);
-		maps.put(name, new DataMap<Object, T>(maxEntries));
+		maps.put(name, new DataMap<>(maxEntries));
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <K> DataTable<T> addMultiIndex(final String name, final Function<T, K> keySupplier,
+			final Function<T, Boolean> filter) {
+		multiKeySuppliers.put(name, (Function<T, Object>) keySupplier);
+		if (filter != null)
+			multiFilters.put(name, filter);
+		multiMaps.put(name, new ArrayListValuedHashMap<>(maxEntries));
 		return this;
 	}
 
@@ -77,6 +98,11 @@ public class DataTable<T> {
 			DataMap<Object, T> map = maps.get(name);
 			map.remove(func.apply(e));
 		}
+		for (String name : multiKeySuppliers.keySet()) {
+			Function<T, ?> func = multiKeySuppliers.get(name);
+			MultiValuedMap<Object, T> map = multiMaps.get(name);
+			map.removeMapping(func.apply(e), e);
+		}
 		return e;
 	}
 
@@ -90,6 +116,18 @@ public class DataTable<T> {
 	 */
 	public synchronized <K> T get(final String name, final K key) {
 		return maps.get(name).get(key);
+	}
+
+	/**
+	 * Gets elements by a specified multi-index.
+	 *
+	 * @param <K>  the type of the key used by the given multi-index
+	 * @param name the name of the multi-index
+	 * @param key  the key of the element to retrieve using the given multi-index
+	 * @return the collection of elements to retrieve, that may be empty
+	 */
+	public synchronized <K> Collection<T> multiGet(final String name, final K key) {
+		return multiMaps.get(name).get(key);
 	}
 
 	/**
@@ -113,6 +151,14 @@ public class DataTable<T> {
 					map.put(key, element);
 				}
 			}
+			for (Entry<String, Function<T, Object>> entry : multiKeySuppliers.entrySet()) {
+				Function<T, Boolean> filter = multiFilters.get(entry.getKey());
+				MultiValuedMap<Object, T> map = multiMaps.get(entry.getKey());
+				if (filter == null || filter.apply(element)) {
+					Object key = entry.getValue().apply(element);
+					map.put(key, element);
+				}
+			}
 		}
 	}
 
@@ -129,6 +175,18 @@ public class DataTable<T> {
 	}
 
 	/**
+	 * Get a set of keys for a given multi-index.
+	 *
+	 * @param <K>  the type of the key for the given multi-index
+	 * @param name the name of the multi-index to get the keys from
+	 * @return a set of keys
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized <K> Set<K> multiKeySet(final String name) {
+		return (Set<K>) multiMaps.get(name).keySet();
+	}
+
+	/**
 	 * Get a list of keys for a given index.
 	 *
 	 * @param <K>  the type of the key for the given index
@@ -139,6 +197,20 @@ public class DataTable<T> {
 	public synchronized <K> List<K> keyList(final String name) {
 		List<K> list = new ArrayList<>();
 		list.addAll((Set<K>) maps.get(name).keySet());
+		return list;
+	}
+
+	/**
+	 * Get a list of keys for a given multi-index.
+	 *
+	 * @param <K>  the type of the key for the given multi-index
+	 * @param name the name of the multi-index to get the keys from
+	 * @return a list of keys
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized <K> List<K> multiKeyList(final String name) {
+		List<K> list = new ArrayList<>();
+		list.addAll((Set<K>) multiMaps.get(name).keySet());
 		return list;
 	}
 
@@ -170,6 +242,14 @@ public class DataTable<T> {
 			DataMap<Object, T> map = new DataMap<>(maxEntries);
 			maps.put(entry.getKey(), map);
 			Function<T, Boolean> filter = filters.get(entry.getKey());
+			for (T s : backingArray)
+				if (filter == null || filter.apply(s))
+					map.put(entry.getValue().apply(s), s);
+		}
+		for (Entry<String, Function<T, Object>> entry : multiKeySuppliers.entrySet()) {
+			MultiValuedMap<Object, T> map = new ArrayListValuedHashMap<>(maxEntries);
+			multiMaps.put(entry.getKey(), map);
+			Function<T, Boolean> filter = multiFilters.get(entry.getKey());
 			for (T s : backingArray)
 				if (filter == null || filter.apply(s))
 					map.put(entry.getValue().apply(s), s);
