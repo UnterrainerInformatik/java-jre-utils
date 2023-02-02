@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -116,7 +117,9 @@ public class DoubleBufferedFile {
 		}
 
 		BufferedWriter getBufferedWriter() throws IOException {
-			return Files.newBufferedWriter(path, Charset.forName("UTF-8"));
+			Files.createDirectories(path.getParent());
+			return Files.newBufferedWriter(path, Charset.forName("UTF-8"), StandardOpenOption.CREATE,
+					StandardOpenOption.WRITE, StandardOpenOption.APPEND);
 		}
 	}
 
