@@ -230,6 +230,10 @@ public class DataTable<T> {
 		return multiMaps.get(name).containsValue(value);
 	}
 
+	public synchronized <K> boolean containsKey(final String name, final K value) {
+		return maps.get(name).containsKey(value);
+	}
+
 	public synchronized <K> boolean multiContainsKey(final String name, final K value) {
 		return multiMaps.get(name).containsKey(value);
 	}
