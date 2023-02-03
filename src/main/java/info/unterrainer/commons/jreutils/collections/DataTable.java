@@ -218,18 +218,28 @@ public class DataTable<T> {
 		return maps.get(name).values();
 	}
 
+	public synchronized Collection<T> multiValues(final String name) {
+		return multiMaps.get(name).values();
+	}
+
 	public synchronized boolean containsValue(final String name, final T value) {
 		return maps.get(name).containsValue(value);
 	}
 
-	public synchronized <K> boolean containsKey(final String name, final K value) {
-		return maps.get(name).containsKey(value);
+	public synchronized boolean multiContainsValue(final String name, final T value) {
+		return multiMaps.get(name).containsValue(value);
+	}
+
+	public synchronized <K> boolean multiContainsKey(final String name, final K value) {
+		return multiMaps.get(name).containsKey(value);
 	}
 
 	public synchronized void clear() {
 		queue.clear();
 		for (String name : keySuppliers.keySet())
 			maps.get(name).clear();
+		for (String name : multiKeySuppliers.keySet())
+			multiMaps.get(name).clear();
 	}
 
 	@SuppressWarnings("unchecked")
