@@ -19,7 +19,24 @@ public class Reflecting {
 	 * 'myField.myArray:0.myVar')
 	 *
 	 * @param classToScan         the class to start scanning in
-	 * @param fieldTypeToFind     the type to search for
+	 * @param annotationToScanFor the annotation the fields we should scan are
+	 *                            annotated with
+	 * @return a list of paths where the given fields have been found
+	 */
+	public List<String> getPathsOf(final Class<?> classToScan, final Class<? extends Annotation> annotationToScanFor) {
+		return getPathsOf(classToScan, null, annotationToScanFor, "");
+	}
+
+	/**
+	 * Scans object tree connected by annotated fields for a given class using
+	 * reflection and returns found paths.<br>
+	 * <br>
+	 * Resolves generic Lists and Arrays as well (example for indexing:
+	 * 'myField.myArray:0.myVar')
+	 *
+	 * @param classToScan         the class to start scanning in
+	 * @param fieldTypeToFind     the type to search for or null, if you have no
+	 *                            type-restriction for your search
 	 * @param annotationToScanFor the annotation the fields we should scan are
 	 *                            annotated with
 	 * @return a list of paths where the given fields have been found
@@ -43,9 +60,8 @@ public class Reflecting {
 
 			if (field.isAnnotationPresent(annotation)) {
 				Class<?> currentType = resolveTypeOf(field);
-				if (typeToFind.isAssignableFrom(currentType)) {
+				if (typeToFind == null || typeToFind.isAssignableFrom(currentType)) {
 					paths.add(currentPath + field.getName());
-					continue;
 				}
 				paths.addAll(getPathsOf(currentType, typeToFind, annotation, currentPath + field.getName() + "."));
 			}

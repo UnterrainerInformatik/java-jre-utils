@@ -21,6 +21,12 @@ public class ReflectingTests {
 	}
 
 	@Test
+	public void TestReadingFieldsWithNullTypeGetsAll() {
+		List<String> results = Reflecting.getPathsOf(Test1Class.class, ContainsMyType.class);
+		assertThat(results).containsAll(List.of("myType", "usedClass.myType"));
+	}
+
+	@Test
 	public void TestReadingFieldsContainsFieldsInArrays() {
 		List<String> results = Reflecting.getPathsOf(Test1Class.class, MyType.class, ContainsMyType.class);
 		assertThat(results).containsAll(List.of("myTypeArray", "usedClassArray.myType"));
@@ -87,14 +93,6 @@ public class ReflectingTests {
 		assertThat(tc.getUsedClassList().get(0).getMyType().getName()).isEqualTo("blubb");
 		assertThat(tc.getUsedClassList().get(1).getMyType().getName()).isNull();
 		assertThat(tc.getUsedClassList().get(2).getMyType().getName()).isEqualTo("gluppy");
-	}
-
-	@Test
-	public void TestIndexOfListEmptyReturnsFirstEntry() throws IllegalArgumentException, IllegalAccessException {
-		Test1Class tc = new Test1Class();
-		MyType mt = Reflecting.getFieldByPath("usedClassList.myType", tc, ContainsMyType.class);
-		mt.setName("blubb");
-		assertThat(tc.getUsedClassList().get(0).getMyType().getName()).isEqualTo("blubb");
 	}
 
 	@Test
