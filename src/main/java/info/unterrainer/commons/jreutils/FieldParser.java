@@ -72,15 +72,17 @@ class FieldParser {
 			throws IllegalArgumentException, IllegalAccessException {
 		Object fieldInstance = field.get(instance);
 		Class<?> currentType = field.getType();
-		if (currentIndex == null)
-			currentIndex = 0;
 
 		if (List.class.isAssignableFrom(currentType)) {
+			if (currentIndex == null)
+				return (fieldInstance);
 			int size = ((List<?>) fieldInstance).size();
 			currentIndex = cap(currentIndex, size);
 			return ((List<?>) fieldInstance).get(currentIndex);
 		}
 		if (currentType.isArray()) {
+			if (currentIndex == null)
+				return (fieldInstance);
 			int size = ((Object[]) fieldInstance).length;
 			currentIndex = cap(currentIndex, size);
 			return ((Object[]) fieldInstance)[currentIndex];
