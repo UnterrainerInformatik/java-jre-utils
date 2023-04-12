@@ -22,7 +22,11 @@ import lombok.experimental.Accessors;
  * You also may specify fragmenting indexes, that define an additional filter
  * that then is applied on inserting a value. The value will then only be added
  * to a specific index, if the filter is satisfied. This allows for
- * runtime-efficient table-fragmentation.
+ * runtime-efficient table-fragmentation.<br>
+ * You may add multi-indexes. Those indexes don't reference a unique item, but
+ * rather a list of items. You have to keep in mind which kind of index it was
+ * when you added it and you have to use the proper accessors and mutators
+ * respective to the kind of index you're manipulating.
  */
 @Accessors(fluent = true)
 public class DataTable<T> {
@@ -50,6 +54,12 @@ public class DataTable<T> {
 		return addIndex(name, keySupplier, null);
 	}
 
+	/**
+	 * Adds a multi-indexes. Those indexes don't reference a unique item, but rather
+	 * a list of items.<br>
+	 * Be sure to manipulate these indexes using the appropriate accessors or
+	 * mutators.
+	 */
 	public <K> DataTable<T> addMultiIndex(final String name, final Function<T, K> keySupplier) {
 		return addMultiIndex(name, keySupplier, null);
 	}
@@ -64,6 +74,12 @@ public class DataTable<T> {
 		return this;
 	}
 
+	/**
+	 * Adds a multi-indexes. Those indexes don't reference a unique item, but rather
+	 * a list of items.<br>
+	 * Be sure to manipulate these indexes using the appropriate accessors or
+	 * mutators.
+	 */
 	@SuppressWarnings("unchecked")
 	public <K> DataTable<T> addMultiIndex(final String name, final Function<T, K> keySupplier,
 			final Function<T, Boolean> filter) {
@@ -118,6 +134,10 @@ public class DataTable<T> {
 		return maps.get(name).get(key);
 	}
 
+	public synchronized <K> T remove(final String name, final K key) {
+		return maps.get(name).remove(key);
+	}
+
 	/**
 	 * Gets elements by a specified multi-index.
 	 *
@@ -128,6 +148,10 @@ public class DataTable<T> {
 	 */
 	public synchronized <K> Collection<T> multiGet(final String name, final K key) {
 		return multiMaps.get(name).get(key);
+	}
+
+	public synchronized <K> Collection<T> multiRemove(final String name, final K key) {
+		return multiMaps.get(name).remove(key);
 	}
 
 	/**
